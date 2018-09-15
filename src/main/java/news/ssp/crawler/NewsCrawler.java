@@ -1,8 +1,6 @@
 package news.ssp.crawler;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -228,6 +226,16 @@ public class NewsCrawler {
 			String newContent = replaceWebPageImages(content, replaceImgMap);
 			content = newContent;
 		}
+			try {
+				String currentDatePath = DateUtil.getCurrentDatePath();
+				InputStream inputStream = new ByteArrayInputStream(getTextFromHtml(content).getBytes());
+				FileUtils.copyToFile(inputStream, new File(
+						PropertiesUtil.getValue("imageFilePath") + currentDatePath + "/" + title + ".txt"));
+			}catch (Exception e){
+				e.printStackTrace();;
+			}
+
+
 
 		// ≤Â»Î ˝æ›ø‚
 		String sql = "insert into t_article values(null,?,?,null,now(),0,0,null,?,0,null)";
