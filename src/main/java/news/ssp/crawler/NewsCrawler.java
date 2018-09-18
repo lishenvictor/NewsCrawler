@@ -37,7 +37,7 @@ public class NewsCrawler {
 
 	private static Logger logger = Logger.getLogger(NewsCrawler.class);
 
-	private static final String URL = "http://news.qq.com/";
+	private static final String URL =PropertiesUtil.getValue("Url");
 
 	private static Connection con = null;
 
@@ -118,7 +118,7 @@ public class NewsCrawler {
 			return;
 		}
 		Document doc = Jsoup.parse(webPageContent);
-		Elements links = doc.select(".main .Q-tpList .Q-tpWrap .text em a");
+		Elements links = doc.select(PropertiesUtil.getValue("link"));
 		for (int i = 0; i < links.size(); i++) {
 			Element link = links.get(i);
 			String url = link.attr("href");
@@ -196,7 +196,7 @@ public class NewsCrawler {
 			return;
 		}
 		Document doc = Jsoup.parse(blogContent);
-		Elements titleElements = doc.select(".qq_conent .LEFT h1"); // 获取博客标题
+		Elements titleElements = doc.select(PropertiesUtil.getValue("title")); // 获取博客标题
 		if (titleElements.size() == 0) {
 			logger.error(link + "-未获取到博客标题");
 			return;
@@ -204,7 +204,7 @@ public class NewsCrawler {
 		String title = titleElements.get(0).text();
 		System.out.println("博客标题：" + title);
 
-		Elements contentElements = doc.select(".content-article"); // 获取博客内容
+		Elements contentElements = doc.select(PropertiesUtil.getValue("content")); // 获取博客内容
 		Elements imgElements = contentElements.select("img"); // 获取所有图片元素
 		if (contentElements.size() == 0) {
 			logger.error(link + "-未获取到博客内容");
@@ -230,7 +230,7 @@ public class NewsCrawler {
 				String currentDatePath = DateUtil.getCurrentDatePath();
 				InputStream inputStream = new ByteArrayInputStream(getTextFromHtml(content).getBytes());
 				FileUtils.copyToFile(inputStream, new File(
-						PropertiesUtil.getValue("imageFilePath") + currentDatePath + "/" + title + ".txt"));
+						PropertiesUtil.getValue("filePath") + currentDatePath + "/" + title + ".txt"));
 			}catch (Exception e){
 				e.printStackTrace();;
 			}
@@ -238,12 +238,14 @@ public class NewsCrawler {
 
 
 		// 插入数据库
-		String sql = "insert into t_article values(null,?,?,null,now(),0,0,null,?,0,null)";
+		String sql = "insert into t_article values(null,?,?,null,now(),0,0,null,?,0,null,?)";
 		try {
+			String source=PropertiesUtil.getValue("source");
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, title);
 			pstmt.setString(2, content);
 			pstmt.setString(3, link);
+			pstmt.setString(4,source);
 			if (pstmt.executeUpdate() == 1) {
 				logger.info(link + "-成功插入数据库");
 				cache.put(new net.sf.ehcache.Element(link, link));
