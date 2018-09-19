@@ -109,7 +109,7 @@ public class NewsCrawler {
 	}
 
 	/**
-	 * 解析首页内容 提取博客link
+	 * 解析首页内容 提取新闻link
 	 * 
 	 * @param webPageContent
 	 */
@@ -133,7 +133,7 @@ public class NewsCrawler {
 	}
 
 	/**
-	 * 解析博客链接地址 获取博客内容
+	 * 解析新闻链接地址 获取新闻内容
 	 * 
 	 * @param link
 	 */
@@ -186,7 +186,7 @@ public class NewsCrawler {
 	}
 
 	/**
-	 * 解析博客内容，提取有效信息
+	 * 解析新闻内容，提取有效信息
 	 * 
 	 * @param blogContent
 	 * @param link
@@ -196,22 +196,22 @@ public class NewsCrawler {
 			return;
 		}
 		Document doc = Jsoup.parse(blogContent);
-		Elements titleElements = doc.select(PropertiesUtil.getValue("title")); // 获取博客标题
+		Elements titleElements = doc.select(PropertiesUtil.getValue("title")); // 获取新闻标题
 		if (titleElements.size() == 0) {
-			logger.error(link + "-未获取到博客标题");
+			logger.error(link + "-未获取到新闻标题");
 			return;
 		}
 		String title = titleElements.get(0).text();
-		System.out.println("博客标题：" + title);
+		System.out.println("新闻标题：" + title);
 
-		Elements contentElements = doc.select(PropertiesUtil.getValue("content")); // 获取博客内容
+		Elements contentElements = doc.select(PropertiesUtil.getValue("content")); // 获取新闻内容
 		Elements imgElements = contentElements.select("img"); // 获取所有图片元素
 		if (contentElements.size() == 0) {
-			logger.error(link + "-未获取到博客内容");
+			logger.error(link + "-未获取到新闻内容");
 			return;
 		}
 		String content = contentElements.get(0).html();
-		System.out.println("博客内容：" + content);
+		System.out.println("新闻内容：" + content);
 
 		List<String> imgUrlList = new LinkedList<String>();
 		for (int i = 0; i < imgElements.size(); i++) {
