@@ -50,7 +50,8 @@ public class NewsCrawler {
 	private static void parseHomePage() {
 		while (true) {
 			logger.info("开始爬取" + URL + "网页");
-			manager = CacheManager.create(PropertiesUtil.getValue("cacheFilePath"));
+			CacheManager cm = new CacheManager(PropertiesUtil.getValue("cacheFilePath"));
+			manager = CacheManager.getCacheManager(cm.getName());
 			cache = manager.getCache("cnblog");
 			CloseableHttpClient httpClient = HttpClients.createDefault(); // 获取HttpClient实例
 			HttpGet httpget = new HttpGet(URL); // 创建httpget实例
@@ -230,7 +231,7 @@ public class NewsCrawler {
 				String currentDatePath = DateUtil.getCurrentDatePath();
 				InputStream inputStream = new ByteArrayInputStream(getTextFromHtml(content).getBytes());
 				FileUtils.copyToFile(inputStream, new File(
-						PropertiesUtil.getValue("filePath") + currentDatePath + "/" + title + ".txt"));
+						PropertiesUtil.getValue("filePath") + currentDatePath + "/" + title.trim() + ".txt"));
 			}catch (Exception e){
 				e.printStackTrace();;
 			}
@@ -238,7 +239,7 @@ public class NewsCrawler {
 
 
 		// 插入数据库
-		String sql = "insert into t_article values(null,?,?,null,now(),0,0,null,?,0,null,?)";
+		String sql = "insert into t_article values(null,?,?,null,now(),0,0,null,?,0,null,?,?)";
 		try {
 			String source=PropertiesUtil.getValue("source");
 			PreparedStatement pstmt = con.prepareStatement(sql);
@@ -246,6 +247,7 @@ public class NewsCrawler {
 			pstmt.setString(2, content);
 			pstmt.setString(3, link);
 			pstmt.setString(4,source);
+			pstmt.setString(5,getTextFromHtml(content));
 			if (pstmt.executeUpdate() == 1) {
 				logger.info(link + "-成功插入数据库");
 				cache.put(new net.sf.ehcache.Element(link, link));
