@@ -58,7 +58,7 @@ public class NewsCrawler {
 			if (manager == null) {
 				manager = CacheManager.create();
 			}
-			cache = manager.getCache("cnblog");
+			cache = manager.getCache("news");
 			cache.flush();
 			CloseableHttpClient httpClient = HttpClients.createDefault(); // 获取HttpClient实例
 			HttpGet httpget = new HttpGet(URL); // 创建httpget实例
@@ -107,11 +107,11 @@ public class NewsCrawler {
 				cache.flush(); // 把缓存写入文件
 			}
 			manager.shutdown();
-			try {
-				Thread.sleep(1 * 60 * 1000); // 每隔10分钟抓取一次网页数据
-			} catch (InterruptedException e) {
-				logger.error("InterruptedException", e);
-			}
+//			try {
+//				Thread.sleep(1 * 60 * 1000); // 每隔10分钟抓取一次网页数据
+//			} catch (InterruptedException e) {
+//				logger.error("InterruptedException", e);
+//			}
 			logger.info("结束爬取" + URL + "网页");
 		}
 //	}

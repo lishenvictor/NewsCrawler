@@ -5,7 +5,7 @@
          磁盘存储:将缓存中暂时不使用的对象,转移到硬盘,类似于Windows系统的虚拟内存
           path:指定在硬盘上存储对象的路径
    -->
-   <diskStore path="G:\项目\blogehcache" />
+   <diskStore path="G:\项目\newsehcache" />
    
    <!-- 
         defaultCache:默认的缓存配置信息,如果不加特殊说明,则所有对象按照此配置项处理
@@ -15,14 +15,14 @@
    -->
    <defaultCache
       maxElementsInMemory="1"
-      eternal="true"
+      eternal="false"
       overflowToDisk="true"/>
 
     <cache 
-      name="cnblog"
+      name="news"
       maxElementsInMemory="1"
       diskPersistent="true"
-      eternal="true"
+      eternal="false"
       overflowToDisk="true"/>
       
   
