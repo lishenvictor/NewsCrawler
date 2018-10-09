@@ -401,11 +401,16 @@ public class NewsCrawler {
      * @return
      */
     public static String getTextFromHtml(String htmlStr){
+    	if(htmlStr.contains("data-role=\"original-title\"")) {
+			System.out.println(htmlStr.indexOf("<p>"));
+			htmlStr = htmlStr.substring(htmlStr.indexOf("<p>"));
+		}
         //去除html标签
         htmlStr = delHtmlTags(htmlStr);
         //去除空格" "
         htmlStr = htmlStr.replaceAll(" ","");
-        return htmlStr;
+		htmlStr = htmlStr.replaceAll("返回搜狐，查看更多责任编辑：","");
+		return htmlStr;
     }
 
     public static void main(String[] args) {
