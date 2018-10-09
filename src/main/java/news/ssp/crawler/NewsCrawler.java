@@ -4,14 +4,9 @@ import java.io.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
-import net.sf.ehcache.CacheException;
-import org.apache.commons.codec.language.Caverphone1;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.ParseException;
@@ -130,6 +125,13 @@ public class NewsCrawler {
 		for (int i = 0; i < links.size(); i++) {
 			Element link = links.get(i);
 			String url = link.attr("href");
+			if(URL.contains("http://news.sohu.com/")){
+				if(url != null && url != ""){
+					if(!url.contains("http:") && !url.contains("https:")){
+						url = "http:" + url;
+					}
+				}
+			}
 			System.out.println(url);
 			cache.flush();
 			if (cache.get(url) != null) { // 如果缓存中存在就不插入
@@ -402,8 +404,7 @@ public class NewsCrawler {
      */
     public static String getTextFromHtml(String htmlStr){
     	if(htmlStr.contains("data-role=\"original-title\"")) {
-			System.out.println(htmlStr.indexOf("<p>"));
-			htmlStr = htmlStr.substring(htmlStr.indexOf("<p>"));
+			htmlStr = htmlStr.substring(htmlStr.indexOf("</p>") + 6);
 		}
         //去除html标签
         htmlStr = delHtmlTags(htmlStr);
