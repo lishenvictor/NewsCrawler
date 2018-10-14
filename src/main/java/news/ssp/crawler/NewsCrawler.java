@@ -403,8 +403,10 @@ public class NewsCrawler {
      * @return
      */
     public static String getTextFromHtml(String htmlStr){
-    	if(htmlStr.contains("data-role=\"original-title\"")) {
-			htmlStr = htmlStr.substring(htmlStr.indexOf("</p>") + 6);
+		if(URL.contains("http://news.sohu.com/")) {
+			if (htmlStr.contains("data-role=\"original-title\"")) {
+				htmlStr = htmlStr.substring(htmlStr.indexOf("</p>") + 6);
+			}
 		}
         //È¥³ýhtml±êÇ©
         htmlStr = delHtmlTags(htmlStr);
